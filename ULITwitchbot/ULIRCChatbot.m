@@ -11,7 +11,6 @@
 
 
 // Based on http://chi.cs.uchicago.edu/chirc/irc_examples.html and https://help.twitch.tv/customer/portal/articles/1302780-twitch-irc
-// OAuth tokens can be obtained via https://twitchapps.com/tmi/#access_token=gctvy5ean6qwtqrwx0lvrluc8si1bv&scope=chat_login
 
 
 #define IRC_PROTOCOL_MESSAGE_LENGTH_LIMIT	512
@@ -195,8 +194,6 @@
 	[self sendString: [NSString stringWithFormat: @"JOIN #%@", self.channelName.lowercaseString]];
 
 	*outError = nil;
-	
-//	[NSThread detachNewThreadSelector:@selector(readThread) toTarget:self withObject:nil];
 }
 
 
