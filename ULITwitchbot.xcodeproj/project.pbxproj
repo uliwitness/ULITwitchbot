@@ -12,6 +12,7 @@
 		550C7A9020570D9400D0C4A3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A8E20570D9400D0C4A3 /* MainMenu.xib */; };
 		550C7A9320570D9400D0C4A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9220570D9400D0C4A3 /* main.m */; };
 		550C7A9C20570E3500D0C4A3 /* ULIRCChatbot.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */; };
+		550C7A9E205757A200D0C4A3 /* ULITwitchbot in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A9D205757A200D0C4A3 /* ULITwitchbot */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		550C7A9420570D9400D0C4A3 /* ULITwitchbot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ULITwitchbot.entitlements; sourceTree = "<group>"; };
 		550C7A9A20570E3500D0C4A3 /* ULIRCChatbot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ULIRCChatbot.h; sourceTree = "<group>"; };
 		550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ULIRCChatbot.m; sourceTree = "<group>"; };
+		550C7A9D205757A200D0C4A3 /* ULITwitchbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ULITwitchbot; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				550C7A9120570D9400D0C4A3 /* Info.plist */,
 				550C7A9220570D9400D0C4A3 /* main.m */,
 				550C7A9420570D9400D0C4A3 /* ULITwitchbot.entitlements */,
+				550C7A9D205757A200D0C4A3 /* ULITwitchbot */,
 			);
 			path = ULITwitchbot;
 			sourceTree = "<group>";
@@ -131,6 +134,7 @@
 			files = (
 				550C7A8D20570D9400D0C4A3 /* Assets.xcassets in Resources */,
 				550C7A9020570D9400D0C4A3 /* MainMenu.xib in Resources */,
+				550C7A9E205757A200D0C4A3 /* ULITwitchbot in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

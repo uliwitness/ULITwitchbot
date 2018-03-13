@@ -15,6 +15,8 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
                 <outlet property="messageField" destination="ior-gz-Omc" id="Oq0-F4-Igs"/>
+                <outlet property="oauthTokenField" destination="P2c-R4-ujj" id="Qwf-16-cL8"/>
+                <outlet property="userNameField" destination="mCP-es-SA4" id="zkL-g5-0ce"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -683,26 +685,15 @@
         <window title="ULITwitchbot" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="480" height="360"/>
+            <rect key="contentRect" x="335" y="390" width="452" height="360"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
+                <rect key="frame" x="0.0" y="0.0" width="452" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ior-gz-Omc">
-                        <rect key="frame" x="20" y="318" width="150" height="22"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="150" id="U3c-1D-asS"/>
-                        </constraints>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="0FR-z1-puv">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXm-Sz-FIT">
-                        <rect key="frame" x="172" y="312" width="66" height="32"/>
-                        <buttonCell key="cell" type="push" title="Test" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eCH-Wa-25o">
+                        <rect key="frame" x="367" y="220" width="71" height="32"/>
+                        <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eCH-Wa-25o">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -710,14 +701,77 @@
                             <action selector="sendAMessage:" target="Voe-Tx-rLC" id="a8o-fF-GPr"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sDo-Xa-Ie4">
+                        <rect key="frame" x="14" y="250" width="92" height="32"/>
+                        <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Cq-f3-hRL">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="establishConnection:" target="Voe-Tx-rLC" id="GRe-aY-4H8"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ior-gz-Omc">
+                        <rect key="frame" x="20" y="227" width="345" height="22"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Chat Message" drawsBackground="YES" id="0FR-z1-puv">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mCP-es-SA4">
+                        <rect key="frame" x="20" y="318" width="180" height="22"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="180" id="Krt-gH-zlB"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="user name" drawsBackground="YES" id="Y3G-Vf-JCL">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P2c-R4-ujj">
+                        <rect key="frame" x="20" y="286" width="324" height="22"/>
+                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="OAuth Token" drawsBackground="YES" usesSingleLineMode="YES" id="RQ5-lx-S6c">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                            </allowedInputSourceLocales>
+                        </secureTextFieldCell>
+                    </secureTextField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AED-eB-HHS">
+                        <rect key="frame" x="347" y="281" width="90" height="28"/>
+                        <buttonCell key="cell" type="push" title="Get A Token" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZU7-dx-rEY">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="openTokenPageURL:" target="Voe-Tx-rLC" id="7qD-aL-B3N"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="rXm-Sz-FIT" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="3gj-70-LDL"/>
+                    <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="8" symbolic="YES" id="0Wm-vJ-NDX"/>
+                    <constraint firstItem="sDo-Xa-Ie4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="39s-WA-TJB"/>
+                    <constraint firstItem="P2c-R4-ujj" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="EHK-92-Rd5"/>
+                    <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="I4A-eu-Q4g"/>
+                    <constraint firstItem="AED-eB-HHS" firstAttribute="baseline" secondItem="P2c-R4-ujj" secondAttribute="baseline" id="Oag-6v-cdA"/>
                     <constraint firstItem="rXm-Sz-FIT" firstAttribute="leading" secondItem="ior-gz-Omc" secondAttribute="trailing" constant="8" symbolic="YES" id="OdI-yd-vBO"/>
                     <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="YWN-qZ-nz3"/>
-                    <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="fc7-vV-5an"/>
+                    <constraint firstItem="mCP-es-SA4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" id="bIu-fo-8K1"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mCP-es-SA4" secondAttribute="trailing" constant="20" symbolic="YES" id="cnX-ZB-KY5"/>
+                    <constraint firstAttribute="trailing" secondItem="rXm-Sz-FIT" secondAttribute="trailing" constant="20" symbolic="YES" id="fUK-70-9O5"/>
+                    <constraint firstItem="rXm-Sz-FIT" firstAttribute="baseline" secondItem="ior-gz-Omc" secondAttribute="baseline" id="iRT-a5-VEu"/>
+                    <constraint firstItem="P2c-R4-ujj" firstAttribute="top" secondItem="mCP-es-SA4" secondAttribute="bottom" constant="10" symbolic="YES" id="nca-9v-z3H"/>
+                    <constraint firstItem="mCP-es-SA4" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" id="qhE-Ga-q9W"/>
+                    <constraint firstItem="sDo-Xa-Ie4" firstAttribute="top" secondItem="P2c-R4-ujj" secondAttribute="bottom" constant="8" symbolic="YES" id="t8q-FE-dbC"/>
+                    <constraint firstItem="AED-eB-HHS" firstAttribute="leading" secondItem="P2c-R4-ujj" secondAttribute="trailing" constant="8" symbolic="YES" id="tAg-fe-va6"/>
+                    <constraint firstAttribute="trailing" secondItem="AED-eB-HHS" secondAttribute="trailing" constant="20" symbolic="YES" id="ye0-4i-z9Y"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="255" y="162"/>
         </window>
     </objects>
 </document>
