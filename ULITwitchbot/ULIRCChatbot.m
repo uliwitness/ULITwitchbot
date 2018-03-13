@@ -177,8 +177,8 @@
 	
 	CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, CFSTR("irc.chat.twitch.tv"), 6667, &readStream, &writeStream);
 	
-	self.readStream = (__bridge NSInputStream *)readStream;
-	self.writeStream = (__bridge NSOutputStream *)writeStream;
+	self.readStream = (__bridge_transfer NSInputStream *)readStream;
+	self.writeStream = (__bridge_transfer NSOutputStream *)writeStream;
 	
 	self.readStream.delegate = self;
 	[self.readStream open];
