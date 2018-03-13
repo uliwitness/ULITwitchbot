@@ -11,6 +11,7 @@
 		550C7A8D20570D9400D0C4A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A8C20570D9400D0C4A3 /* Assets.xcassets */; };
 		550C7A9020570D9400D0C4A3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A8E20570D9400D0C4A3 /* MainMenu.xib */; };
 		550C7A9320570D9400D0C4A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9220570D9400D0C4A3 /* main.m */; };
+		550C7A9C20570E3500D0C4A3 /* ULIRCChatbot.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,8 @@
 		550C7A9120570D9400D0C4A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		550C7A9220570D9400D0C4A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		550C7A9420570D9400D0C4A3 /* ULITwitchbot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ULITwitchbot.entitlements; sourceTree = "<group>"; };
+		550C7A9A20570E3500D0C4A3 /* ULIRCChatbot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ULIRCChatbot.h; sourceTree = "<group>"; };
+		550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ULIRCChatbot.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,8 @@
 			children = (
 				550C7A8920570D9400D0C4A3 /* AppDelegate.h */,
 				550C7A8A20570D9400D0C4A3 /* AppDelegate.m */,
+				550C7A9A20570E3500D0C4A3 /* ULIRCChatbot.h */,
+				550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */,
 				550C7A8C20570D9400D0C4A3 /* Assets.xcassets */,
 				550C7A8E20570D9400D0C4A3 /* MainMenu.xib */,
 				550C7A9120570D9400D0C4A3 /* Info.plist */,
@@ -91,6 +96,7 @@
 		550C7A7E20570D9400D0C4A3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = ULI;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Uli Kusterer";
 				TargetAttributes = {
@@ -137,6 +143,7 @@
 			files = (
 				550C7A9320570D9400D0C4A3 /* main.m in Sources */,
 				550C7A8B20570D9400D0C4A3 /* AppDelegate.m in Sources */,
+				550C7A9C20570E3500D0C4A3 /* ULIRCChatbot.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +268,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ULITwitchbot/ULITwitchbot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RCKXACKVZS;
@@ -276,7 +282,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ULITwitchbot/ULITwitchbot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RCKXACKVZS;
