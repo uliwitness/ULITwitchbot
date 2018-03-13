@@ -10,7 +10,7 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
--(IBAction)establishConnection:(id)sender;
+-(IBAction)	establishConnection:(nullable id)sender;
 -(IBAction) openTokenPageURL: (nullable id)sender;
 
 @end
