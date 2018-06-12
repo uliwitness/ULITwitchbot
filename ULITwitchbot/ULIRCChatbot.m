@@ -23,6 +23,7 @@
 @property (getter=isTurbo) BOOL turbo;
 @property (getter=isBroadcaster) BOOL broadcaster;
 @property (getter=isPartner) BOOL partner;
+@property (getter=isPrime) BOOL prime;
 @property NSInteger bitBadgeAmount;
 @property (copy) NSString *htmlColor;
 @property (copy) NSString *displayName;
@@ -610,10 +611,15 @@
 				_broadcaster = YES;
 			else if( [parts.firstObject.lowercaseString isEqualToString: @"partner"] )
 				_partner = YES;
+			else if( [parts.firstObject.lowercaseString isEqualToString: @"turbo"] )
+				_turbo = YES;
+			else if( [parts.firstObject.lowercaseString isEqualToString: @"premium"] )
+				_prime = YES;
 			else if( [parts.firstObject.lowercaseString isEqualToString: @"bits"] )
 				_bitBadgeAmount = parts.lastObject.integerValue;
 		}
-		_turbo = inTags[@"turbo"].boolValue;
+		if( !_turbo )
+			_turbo = inTags[@"turbo"].boolValue;
 		_moderator = inTags[@"mod"].boolValue;
 		if( !_subscriber )
 			_subscriber = inTags[@"subscriber"].boolValue;
@@ -632,6 +638,7 @@
 									  @"partner": @(_partner),
 									  @"bitBadgeAmount": @(_bitBadgeAmount),
 									  @"turbo": @(_turbo),
+									  @"prime": @(_prime),
 									  @"moderator": @(_moderator),
 									  @"htmlColor": _htmlColor ?: @"",
 									  @"displayName": _displayName ?: @"",
