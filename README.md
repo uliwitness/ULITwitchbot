@@ -2,25 +2,25 @@
 
 ## What is it?
 
-A simple application that will "listen" to the chat in a Twitch channel and react to certain keywords.
+A simple application that will "listen" to the chat in a Twitch channel and react to certain keywords. or periodically do things.
 
 ## How do I use it?
 
-Launch the app, enter the channel's name and your Twitch OAuth token. Then click "Connect".
+Launch the app, enter your account and channel's name and your Twitch OAuth token. Then click "Connect".
 The bot now listens to the chat as if it was you, and will post its replies as your account.
 
 The commands it understands are defined in the Application Support folder. Bot commands follow
 the Twitch convention of having to be one word prefixed with an exclamation mark (like "!dead").
 
+*Note:* It is considered rude to install a bot on someone else's channel without their permission, and could lead to undesired interactions if they already have a bot listening for the same commands. The option to listen to a channel that is not that of your account is intended for people who create a dedicated account for their own channel's bot and make it a moderator.
+
 ### What command types are currently supported?
 
-Currently, the chatbot can create counters that increment each time their command is triggered,
-and commands that pick and post a random line of text from a text file and post it (e.g. for quotes).
+Currently, the chatbot can create counters that increment each time their command is triggered, periodically post text or trigger commands, and handle commands that pick and post a random line of text from a text file and post it (e.g. for quotes), and allow users to add lines of text to that file.
 
 ### Commands in General
 
-Commands are defined by adding a folder with the name of the command to `~/Library/Application Support/ULITwitchbot/Commands/` and placing an Info.plist file in a subfolder of it that contains the settings for the command. Every command has at the least
-a type, specified using the `ULIRCCommandType` key.
+Commands are defined by adding a folder with the name of the command to `~/Library/Application Support/ULITwitchbot/Commands/` and placing an Info.plist file in a subfolder of it that contains the settings for the command. Every command has at the least a type, specified using the `ULIRCCommandType` key.
 
 #### Commands of type "counter"
 
@@ -30,12 +30,11 @@ A counter also implements a second command that can be used to just query the co
 
 `ULIRCQueryCommandName` - Specify the name of the command here that should be used to query the counter without incrementing it. If this key is missing, the command name is used, with "count" appended. So if you named your command "dead", the query command will be named "deadcount".
 
-`ULIRCCommandMessage` - The message to display when either command is triggered. If you do not provide a message, a default message of "%CHANNEL% has a %COMMANDNAME% count of %COUNT%." will be used. If you use any or all of the three placeholders %CHANNEL%, %COMMANDNAME% or %COUNT%. They will automatically be replaced with the requisite values.
+`ULIRCCommandMessage` - The message to display when either command is triggered. If you do not provide a message, a default message of "%CHANNEL% has a %COMMANDNAME% count of %COUNT%." will be used. If you use any or all of the three placeholders `%CHANNEL%`, `%COMMANDNAME%` or `%COUNT%`. They will automatically be replaced with the requisite values.
 
 #### Commands of type "quote"
 
-A quote command looks for a text file named the same as the command and randomly displays lines from this file. So for example,
-if you named the command's folder "joke", it will look for a file named `~/Library/Application Support/ULITwitchbot/Quotes/joke.txt` and display a random line from that whenever a user types "!joke". If you specify a number after the command, e.g. "!joke 5", it will display the fifth line from that file instead.
+A quote command looks for a text file named the same as the command and randomly displays lines from this file. So for example, if you named the command's folder "joke", it will look for a file named `~/Library/Application Support/ULITwitchbot/Quotes/joke.txt` and display a random line from that whenever a user types "!joke". If you specify a number after the command, e.g. "!joke 5", it will display the fifth line from that file instead.
 
 `ULIRCEditable` - Specify a boolean (either YES or NO) under this name in the command's Info.plist file to also add an "add"-command for the command, which chatters can use to add additional lines to this text file. If you name your command "joke", this option will add both a "joke" command and an "addjoke" command.
 
@@ -49,7 +48,7 @@ A message command posts a certain message automatically for you. This is useful 
 
 `ULIRCInitialInterval` - An interval that has to elapse after the bot starts up before this message is sent the first time. If your message is posted periodically (see `ULIRCInterval`), you can use this to stagger different messages, e.g. if you want a message every half hour, and you have three different messages, you can use an interval of 1.5 hours (`5400`) for each, and have the second with an initial interval of `1800`, the third by `3600`. If the message does not repeat, the message will simply be posted once, after this delay.
 
-`ULIRCQuietly` - If you are using the `message` command to periodically trigger commands in ULITwitchBot, you can set this property to the boolean `YES` to have ULITwitchbot just process the given message internally without actually posting it. This way, you can define a number of "internal" commands whose purpose is just to be triggered periodically by a message, but users don't see the internal command names. Of course, if a user or another bot is *supposed* to see this message, you want to not set this key, or specify `NO`.
+`ULIRCQuietly` - If you are using the `message` command to periodically trigger commands in ULITwitchBot, you can set this property to the boolean `YES` to have ULITwitchbot just process the given message internally without actually posting it. This way, you can define a number of "internal" commands whose purpose is just to be triggered periodically by a message, but users don't see the internal command names. Of course, if a user, or another bot is *supposed* to see this message, you want to not set this key, or specify `NO`.
 
 
 ## License
