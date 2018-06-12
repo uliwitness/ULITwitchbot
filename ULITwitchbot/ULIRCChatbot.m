@@ -16,6 +16,21 @@
 #define IRC_PROTOCOL_MESSAGE_LENGTH_LIMIT	512
 
 
+@interface ULIRCUserInfo : NSObject
+
+@property (getter=isModerator) BOOL moderator;
+@property (getter=isSubscriber) BOOL subscriber;
+@property (getter=isTurbo) BOOL turbo;
+@property (getter=isBroadcaster) BOOL broadcaster;
+@property (getter=isPartner) BOOL partner;
+@property NSInteger bitBadgeAmount;
+@property (copy) NSString *htmlColor;
+@property (copy) NSString *displayName;
+
+-(instancetype) initWithTags:(NSDictionary *)inTags;
+
+@end
+
 @interface ULIRCChatbot () <NSStreamDelegate>
 
 @property NSInputStream * readStream;
@@ -28,7 +43,7 @@
 @property NSMutableDictionary<NSString *,NSNumber *> * counters;
 @property NSMutableDictionary<NSString *,NSDate *> * lastCommandUseTimes;
 @property NSDate *startupTime;
-@property NSMutableDictionary<NSString *,NSDictionary *> * userInfos;
+@property NSMutableDictionary<NSString *,ULIRCUserInfo *> * userInfos;
 
 @property NSMutableArray<NSTimer *> * messageTimers;
 
@@ -488,11 +503,17 @@
 		{
 			inNickname = tags[@"display-name"];
 		}
-		self.userInfos[inNickname.lowercaseString] = tags;
-		NSLog(@"user %@ tags changed to %@", inNickname, tags);
+		self.userInfos[inNickname.lowercaseString] = [[ULIRCUserInfo alloc] initWithTags:tags];
+		NSLog(@"user %@ tags changed to %@", inNickname, self.userInfos[inNickname.lowercaseString]);
 	}
 	else if( [messageName isEqualToString:@"PRIVMSG"] )
 	{
+		if( tags.count > 0 && inNickname.length > 0 )
+		{
+			self.userInfos[inNickname.lowercaseString] = [[ULIRCUserInfo alloc] initWithTags:tags];
+			NSLog(@"user %@ tags changed to %@", inNickname, self.userInfos[inNickname.lowercaseString]);
+		}
+
 		if( inParameters.count > 1 )
 		{
 			NSString *theMessage = inParameters[1];
@@ -566,8 +587,58 @@
 
 -(void) sendRequest
 {
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitch.tv/helix/"]];
-	[request setValue:[NSString stringWithFormat:@"Bearer %@", self.oauthToken] forHTTPHeaderField:@"Authorization"];
+	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: @"https://api.twitch.tv/helix/"]];
+	[request setValue: [NSString stringWithFormat:@"Bearer %@", self.oauthToken] forHTTPHeaderField: @"Authorization"];
 }
 
 @end
+
+
+@implementation ULIRCUserInfo
+
+-(instancetype) initWithTags:(NSDictionary<NSString *, NSString *> *)inTags
+{
+	if (self = [super init])
+	{
+		NSArray<NSString *> *badgeLines = [inTags[@"badges"] componentsSeparatedByString: @","];
+		for( NSString *currLine in badgeLines )
+		{
+			NSArray<NSString *> *parts = [currLine componentsSeparatedByString: @"/"];
+			if( [parts.firstObject.lowercaseString isEqualToString: @"subscriber"] )
+				_subscriber = YES;
+			else if( [parts.firstObject.lowercaseString isEqualToString: @"broadcaster"] )
+				_broadcaster = YES;
+			else if( [parts.firstObject.lowercaseString isEqualToString: @"partner"] )
+				_partner = YES;
+			else if( [parts.firstObject.lowercaseString isEqualToString: @"bits"] )
+				_bitBadgeAmount = parts.lastObject.integerValue;
+		}
+		_turbo = inTags[@"turbo"].boolValue;
+		_moderator = inTags[@"mod"].boolValue;
+		if( !_subscriber )
+			_subscriber = inTags[@"subscriber"].boolValue;
+		_htmlColor = inTags[@"color"];
+		_displayName = inTags[@"display-name"];
+	}
+	return self;
+}
+
+
+-(NSString *) description
+{
+	NSDictionary * desriptionDict = @{
+									  @"subscriber": @(_subscriber),
+									  @"broadcaster": @(_broadcaster),
+									  @"partner": @(_partner),
+									  @"bitBadgeAmount": @(_bitBadgeAmount),
+									  @"turbo": @(_turbo),
+									  @"moderator": @(_moderator),
+									  @"htmlColor": _htmlColor ?: @"",
+									  @"displayName": _displayName ?: @"",
+									  };
+	return [NSString stringWithFormat: @"<%@ %p> %@", self.className, self, desriptionDict];
+}
+
+@end
+
+
