@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 
-typedef void (^ULIRCProtocolCommandHandler)(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix);
+typedef void (^ULIRCProtocolCommandHandler)(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix, NSDictionary *inTags);
 
-typedef void (^ULIRCBotCommandHandler)(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix);
+typedef void (^ULIRCBotCommandHandler)(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags);
 
 
 @interface ULIRCChatbot : NSObject

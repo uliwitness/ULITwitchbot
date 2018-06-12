@@ -28,6 +28,7 @@
 @property NSMutableDictionary<NSString *,NSNumber *> * counters;
 @property NSMutableDictionary<NSString *,NSDate *> * lastCommandUseTimes;
 @property NSDate *startupTime;
+@property NSMutableDictionary<NSString *,NSDictionary *> * userInfos;
 
 @property NSMutableArray<NSString *> * startupMessages;
 @property NSMutableArray<NSString *> * quietStartupMessages;
@@ -51,10 +52,11 @@
 		self.quietStartupMessages = [NSMutableArray new];
 		self.messageTimers = [NSMutableArray new];
 		self.lastCommandUseTimes = [NSMutableDictionary new];
+		self.userInfos = [NSMutableDictionary new];
 
-		[self registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix)
+		[self registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix, NSDictionary *inTags)
 		{
-			NSLog(@"ANSWERING [%@] %@: %@ %@", inPrefix, inNickname, inCommandName, inParameters);
+			NSLog(@"ANSWERING [%@] %@: %@ %@ %@", inPrefix, inNickname, inCommandName, inParameters, inTags);
 			[self sendString:[NSString stringWithFormat: @"PONG %@", inParameters.firstObject ?: @""]];
 		} forProtocolCommand: @"PING"];
 	}
@@ -109,7 +111,7 @@
 
 		NSString * queryCommandName = commandInfo[@"ULIRCQueryCommandName"] ?: [commandName stringByAppendingString: @"count"];
 
-		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix )
+		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
 		 {
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
@@ -124,7 +126,7 @@
 				 [self.counters writeToURL: countersURL error:NULL];
 			 }
 		 } forBotCommand: commandName];
-		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix )
+		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
 		 {
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
@@ -138,7 +140,7 @@
 	}
 	else if( [commandType.lowercaseString isEqualToString: @"quote"] )
 	{
-		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix )
+		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
 		 {
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
@@ -159,7 +161,7 @@
 		
 		if( [commandInfo[@"ULIRCEditable"] boolValue] )
 		{
-			[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix )
+			[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
 			 {
 				 typeof(self) strongSelf = weakSelf;
 				 if( strongSelf )
@@ -310,7 +312,7 @@
 	[self sendString: [NSString stringWithFormat: @"NICK %@", self.nickname]];
 
 	[self sendString: @"CAP REQ :twitch.tv/membership"];
-//	[self sendString: @"CAP REQ :twitch.tv/tags"];
+	[self sendString: @"CAP REQ :twitch.tv/tags"];
 	[self sendString: @"CAP REQ :twitch.tv/commands"];
 
 	[self sendString: [NSString stringWithFormat: @"JOIN #%@", self.channelName.lowercaseString]];
@@ -387,12 +389,37 @@
 
 -(void) processOneMessage: (NSString*)inMessage
 {
-	NSLog(@"RECEIVED: %@", inMessage);
+	//NSLog(@"RECEIVED: %@", inMessage);
 	
 	NSString * currMessage = inMessage;
 	NSString * username = @"";
 	NSString * prefix = @"";
+	NSString * tags = @"";
 	NSMutableArray * messageParts = [NSMutableArray array];
+	NSMutableDictionary * tagsDict = [NSMutableDictionary new];
+
+	if( [currMessage hasPrefix:@"@"])
+	{
+		NSRange tagsEndRange = [currMessage rangeOfString: @" "];
+		if( tagsEndRange.location != NSNotFound )
+		{
+			tags = [currMessage substringWithRange:NSMakeRange(1, tagsEndRange.location - 1)];
+			currMessage = [currMessage substringFromIndex: tagsEndRange.location +tagsEndRange.length];
+			
+			NSArray * tagsArray = [tags componentsSeparatedByString:@";"];
+			for( NSString *currLine in tagsArray )
+			{
+				NSRange separatorRange = [currLine rangeOfString:@"="];
+				if (separatorRange.location != NSNotFound)
+				{
+					NSString * tagName = [currLine substringToIndex: separatorRange.location];
+					NSString * tagBody = [currLine substringFromIndex: NSMaxRange(separatorRange)];
+					tagsDict[tagName] = tagBody;
+				}
+			}
+		}
+	}
+	
 	NSRange firstPartEndRange = [currMessage rangeOfString: @" "];
 	if( firstPartEndRange.location != NSNotFound )
 	{
@@ -448,14 +475,23 @@
 	{
 		[messageParts addObject:currMessage];
 	}
-	NSLog(@"%@", inMessage);
-	[self handleMessage: messageParts.firstObject forNickname: username parameters: (messageParts.count > 1) ? [messageParts subarrayWithRange:NSMakeRange(1,messageParts.count - 1)] : @[] prefix: prefix];
+	//NSLog(@"%@", inMessage);
+	[self handleMessage: messageParts.firstObject forNickname: username parameters: (messageParts.count > 1) ? [messageParts subarrayWithRange:NSMakeRange(1,messageParts.count - 1)] : @[] prefix: prefix tags: tagsDict];
 }
 
 
--(void) handleMessage: (NSString*)messageName forNickname: (NSString*)inNickname parameters:(NSArray<NSString *> *)inParameters prefix: (NSString *)prefix
+-(void) handleMessage: (NSString*)messageName forNickname: (NSString*)inNickname parameters:(NSArray<NSString *> *)inParameters prefix: (NSString *)prefix tags: (NSDictionary *)tags
 {
-	if( [messageName isEqualToString:@"PRIVMSG"] )
+	if( [messageName isEqualToString:@"USERSTATE"] )
+	{
+		if( inNickname.length == 0 )
+		{
+			inNickname = tags[@"display-name"];
+		}
+		self.userInfos[inNickname.lowercaseString] = tags;
+		NSLog(@"user %@ tags changed to %@", inNickname, tags);
+	}
+	else if( [messageName isEqualToString:@"PRIVMSG"] )
 	{
 		if( inParameters.count > 1 )
 		{
@@ -481,7 +517,7 @@
 					handler = self.botCommands[@"*"];
 				if( handler )
 				{
-					handler( botCommandName, inNickname, botCommandMessage, prefix );
+					handler( botCommandName, inNickname, botCommandMessage, prefix, tags );
 					self.lastCommandUseTimes[botCommandName.lowercaseString] = [NSDate date];
 					return;
 				}
@@ -494,10 +530,10 @@
 		handler = self.protocolCommands[@"*"];
 	if( handler )
 	{
-		handler( messageName, inNickname, inParameters, prefix );
+		handler( messageName, inNickname, inParameters, prefix, tags );
 	}
 
-	NSLog(@"[%@] %@: %@ %@", prefix, inNickname, messageName, inParameters);
+	//NSLog(@"[%@] %@: %@ %@ %@", prefix, inNickname, messageName, inParameters, tags);
 }
 
 

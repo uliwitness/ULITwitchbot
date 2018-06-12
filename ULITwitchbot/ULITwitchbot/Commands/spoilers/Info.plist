@@ -7,8 +7,6 @@
 	<key>ULIRCMessage</key>
 	<string>Please don&apos;t post story spoilers or backseat. If I need help, I&apos;ll ask.</string>
 	<key>ULIRCInterval</key>
-	<integer>120</integer>
-	<key>ULIRCInitialInterval</key>
-	<integer>15</integer>
+	<integer>1800</integer>
 </dict>
 </plist>

@@ -131,12 +131,12 @@
 		NSLog(@"Settings folder: %@", self.chatbot.settingsFolderURL);
 	}
 	
-	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix)
+	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags)
 	{
 		NSLog(@"%@ BOT COMMAND TRIGGERED", inCommandName);
 	} forBotCommand:@"*"];
 	
-	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix)
+	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix, NSDictionary *inTags)
 	{
 		NSLog(@"[%@] %@: %@", (inParameters.count > 0) ? inParameters[0] : @"", inNickname, (inParameters.count > 1) ? inParameters[1] : @"");
 	} forProtocolCommand: @"PRIVMSG"];

@@ -7,9 +7,9 @@
 	<key>ULIRCMessage</key>
 	<string>!quote</string>
 	<key>ULIRCInterval</key>
-	<integer>120</integer>
+	<integer>1800</integer>
 	<key>ULIRCInitialInterval</key>
-	<integer>5</integer>
+	<integer>500</integer>
 	<key>ULIRCQuietly</key>
 	<true/>
 </dict>
