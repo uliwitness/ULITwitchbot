@@ -15,7 +15,8 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
                 <outlet property="channelNameField" destination="w3a-wq-vGC" id="oYe-sb-NaU"/>
-                <outlet property="messageField" destination="ior-gz-Omc" id="Oq0-F4-Igs"/>
+                <outlet property="messageField" destination="veD-ip-1Fb" id="MbF-gz-hMd"/>
+                <outlet property="messagePostWindow" destination="Ew4-r0-9lW" id="gyU-Ag-zd3"/>
                 <outlet property="oauthTokenField" destination="P2c-R4-ujj" id="Qwf-16-cL8"/>
                 <outlet property="userNameField" destination="mCP-es-SA4" id="zkL-g5-0ce"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
@@ -693,16 +694,6 @@
                 <rect key="frame" x="0.0" y="0.0" width="452" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXm-Sz-FIT">
-                        <rect key="frame" x="367" y="184" width="71" height="32"/>
-                        <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eCH-Wa-25o">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="sendAMessage:" target="Voe-Tx-rLC" id="a8o-fF-GPr"/>
-                        </connections>
-                    </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sDo-Xa-Ie4">
                         <rect key="frame" x="14" y="228" width="92" height="32"/>
                         <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Cq-f3-hRL">
@@ -714,14 +705,6 @@
                             <binding destination="Voe-Tx-rLC" name="title" keyPath="connectButtonTitle" id="vhU-Zv-QVU"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ior-gz-Omc">
-                        <rect key="frame" x="20" y="191" width="345" height="22"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Chat Message" drawsBackground="YES" id="0FR-z1-puv">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mCP-es-SA4">
                         <rect key="frame" x="20" y="318" width="180" height="22"/>
                         <constraints>
@@ -784,22 +767,16 @@
                     </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="22" id="0Wm-vJ-NDX"/>
                     <constraint firstItem="sDo-Xa-Ie4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="39s-WA-TJB"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="sDo-Xa-Ie4" secondAttribute="trailing" constant="20" symbolic="YES" id="4iL-8X-Qy9"/>
-                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ior-gz-Omc" secondAttribute="bottom" constant="20" symbolic="YES" id="9uc-fX-ZuJ"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="20" symbolic="YES" id="9hX-EC-d4M"/>
                     <constraint firstItem="P2c-R4-ujj" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="EHK-92-Rd5"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uRn-ne-k9x" secondAttribute="trailing" constant="20" symbolic="YES" id="Gtk-Hn-4p6"/>
-                    <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="I4A-eu-Q4g"/>
                     <constraint firstItem="AED-eB-HHS" firstAttribute="baseline" secondItem="P2c-R4-ujj" secondAttribute="baseline" id="Oag-6v-cdA"/>
-                    <constraint firstItem="rXm-Sz-FIT" firstAttribute="leading" secondItem="ior-gz-Omc" secondAttribute="trailing" constant="8" symbolic="YES" id="OdI-yd-vBO"/>
                     <constraint firstItem="sDo-Xa-Ie4" firstAttribute="top" secondItem="uRn-ne-k9x" secondAttribute="bottom" constant="8" id="V8N-qh-EgO"/>
-                    <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="YWN-qZ-nz3"/>
                     <constraint firstItem="mCP-es-SA4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" id="bIu-fo-8K1"/>
                     <constraint firstItem="w3a-wq-vGC" firstAttribute="leading" secondItem="mCP-es-SA4" secondAttribute="trailing" constant="8" symbolic="YES" id="e3x-2U-qzY"/>
                     <constraint firstItem="w3a-wq-vGC" firstAttribute="baseline" secondItem="mCP-es-SA4" secondAttribute="baseline" id="ela-Xl-Oyf"/>
-                    <constraint firstAttribute="trailing" secondItem="rXm-Sz-FIT" secondAttribute="trailing" constant="20" symbolic="YES" id="fUK-70-9O5"/>
-                    <constraint firstItem="rXm-Sz-FIT" firstAttribute="baseline" secondItem="ior-gz-Omc" secondAttribute="baseline" id="iRT-a5-VEu"/>
                     <constraint firstItem="uRn-ne-k9x" firstAttribute="top" secondItem="P2c-R4-ujj" secondAttribute="bottom" constant="8" symbolic="YES" id="k4u-nx-OIt"/>
                     <constraint firstItem="P2c-R4-ujj" firstAttribute="top" secondItem="mCP-es-SA4" secondAttribute="bottom" constant="10" symbolic="YES" id="nca-9v-z3H"/>
                     <constraint firstItem="mCP-es-SA4" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" id="qhE-Ga-q9W"/>
@@ -810,6 +787,52 @@
                 </constraints>
             </view>
             <point key="canvasLocation" x="255" y="162"/>
+        </window>
+        <window title="Post Message" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ew4-r0-9lW" userLabel="Post Message" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <rect key="contentRect" x="335" y="390" width="452" height="360"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" wantsLayer="YES" id="DNt-Xx-2J6">
+                <rect key="frame" x="0.0" y="0.0" width="452" height="62"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsg-bK-FMf">
+                        <rect key="frame" x="367" y="13" width="71" height="32"/>
+                        <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="df6-6w-phC">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="sendAMessage:" target="Voe-Tx-rLC" id="rPS-L1-Nh5"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="veD-ip-1Fb">
+                        <rect key="frame" x="20" y="20" width="345" height="22"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" placeholderString="Chat Message" drawsBackground="YES" usesSingleLineMode="YES" id="ZmP-IB-8EJ">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="sendAMessage:" target="Voe-Tx-rLC" id="dlp-Sk-coo"/>
+                        </connections>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="veD-ip-1Fb" firstAttribute="top" secondItem="DNt-Xx-2J6" secondAttribute="top" constant="20" symbolic="YES" id="A7I-3A-hiG"/>
+                    <constraint firstAttribute="trailing" secondItem="jsg-bK-FMf" secondAttribute="trailing" constant="20" symbolic="YES" id="G7y-F3-BcP"/>
+                    <constraint firstItem="veD-ip-1Fb" firstAttribute="leading" secondItem="DNt-Xx-2J6" secondAttribute="leading" constant="20" symbolic="YES" id="QrO-w6-myp"/>
+                    <constraint firstItem="jsg-bK-FMf" firstAttribute="baseline" secondItem="veD-ip-1Fb" secondAttribute="baseline" id="W0K-6t-IIS"/>
+                    <constraint firstItem="veD-ip-1Fb" firstAttribute="leading" secondItem="DNt-Xx-2J6" secondAttribute="leading" constant="20" symbolic="YES" id="ZLT-d3-UvV"/>
+                    <constraint firstAttribute="bottom" secondItem="veD-ip-1Fb" secondAttribute="bottom" constant="20" symbolic="YES" id="lYF-jv-XQE"/>
+                    <constraint firstItem="jsg-bK-FMf" firstAttribute="leading" secondItem="veD-ip-1Fb" secondAttribute="trailing" constant="8" symbolic="YES" id="sbr-o9-p0e"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="YFi-kc-OfJ"/>
+                <outlet property="initialFirstResponder" destination="veD-ip-1Fb" id="9CP-RA-rkx"/>
+            </connections>
+            <point key="canvasLocation" x="264" y="442"/>
         </window>
     </objects>
 </document>

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ULIRCChatbot.h"
+@import Carbon;
 
 
 @interface AppDelegate ()
@@ -20,6 +21,8 @@
 @property (strong) ULIRCChatbot *chatbot;
 @property (nonatomic) BOOL shouldLoadBotCommands;
 @property (nonatomic) BOOL makeChannelNameMatchUserName;
+
+@property (weak) IBOutlet NSWindow *messagePostWindow;
 
 @end
 
@@ -63,7 +66,16 @@
 }
 
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData)
+{
+	AppDelegate * self = (__bridge AppDelegate *) userData;
+	
+	[self hotkeyTriggered];
+	
+	return noErr;
+}
+
+-(void)	applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	self.userNameField.stringValue = self.userName;
 	self.channelNameField.stringValue = self.channelName;
@@ -74,10 +86,29 @@
 	NSNumber *loadBotCommandsObject = [NSUserDefaults.standardUserDefaults objectForKey:@"ULIRCLoadBotCommands"];
 	BOOL loadBotCommands = loadBotCommandsObject ? loadBotCommandsObject.boolValue : YES;
 	self.shouldLoadBotCommands = loadBotCommands;
+	
+	EventTypeSpec eventSpec[] = { { kEventClassKeyboard, kEventHotKeyReleased } };
+	InstallApplicationEventHandler( &ULIHotKeyHandler, GetEventTypeCount(eventSpec), eventSpec, (__bridge void *)self, NULL );
+
+	EventHotKeyID keyID;
+	keyID.signature = 'BOFF';
+	keyID.id = 1;
+	
+	EventHotKeyRef carbonHotKey;
+	OSStatus err = RegisterEventHotKey(0x11, cmdKey | controlKey | optionKey, keyID, GetEventDispatcherTarget(), 0, &carbonHotKey);
 }
 
 
-- (void)applicationWillTerminate: (NSNotification *)notification
+-(void) hotkeyTriggered
+{
+	[self.messagePostWindow makeKeyAndOrderFront: self];
+	[NSApplication.sharedApplication activateIgnoringOtherApps: YES];
+	[self.messagePostWindow makeFirstResponder: self.messageField];
+	[self.messageField selectText: self];
+}
+
+
+-(void)	applicationWillTerminate: (NSNotification *)notification
 {
 	NSString * userName = self.userNameField.stringValue;
 	[NSUserDefaults.standardUserDefaults setObject: userName forKey:@"ULIRCUserName"];
@@ -93,7 +124,7 @@
 }
 
 
--(IBAction)establishConnection:(nullable id)sender
+-(IBAction)	establishConnection:(nullable id)sender
 {
 	if (self.chatbot != nil)
 	{
@@ -121,7 +152,7 @@
 	self.chatbot.settingsFolderURL = _shouldLoadBotCommands ? settingsURL : nil;
 	self.chatbot.oauthToken = self.oauthToken;
 	self.chatbot.nickname = self.userName;
-	self.chatbot.channelName = self.userName;
+	self.chatbot.channelName = self.channelName;
 
 	[self didChangeValueForKey:@"enableShouldLoadBotCommands"];
 	[self didChangeValueForKey:@"connectButtonTitle"];
@@ -149,6 +180,7 @@
 -(IBAction) sendAMessage: (nullable id)sender
 {
 	[self.chatbot sendChatMessage: self.messageField.stringValue];
+	[self.messagePostWindow orderOut: self];
 }
 
 -(IBAction) openTokenPageURL: (nullable id)sender
