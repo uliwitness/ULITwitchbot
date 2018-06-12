@@ -159,20 +159,29 @@
 			 {
 				 NSURL * quotesURL = [[strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
 				 NSString * quotesData = [NSString stringWithContentsOfURL: quotesURL encoding: NSUTF8StringEncoding error: NULL];
-				 NSArray * quotes = [quotesData componentsSeparatedByString: @"\n"];
-				 NSInteger quoteIndex = (inMessage.length > 0) ? (inMessage.integerValue - 1) : (rand() % quotes.count);
-				 if( quoteIndex < quotes.count )
+				 NSArray * quotes = (quotesData.length > 0) ? [quotesData componentsSeparatedByString: @"\n"] : @[];
+				 if( quotes.count > 0 )
 				 {
-					 NSString * quoteLine = [quotes objectAtIndex: quoteIndex];
-					 [strongSelf sendChatMessage: [NSString stringWithFormat: @"%ld: %@", quoteIndex + 1, quoteLine]];
+					 NSInteger quoteIndex = (inMessage.length > 0) ? (inMessage.integerValue - 1) : (rand() % quotes.count);
+					 if( quoteIndex < quotes.count )
+					 {
+						 NSString * quoteLine = [quotes objectAtIndex: quoteIndex];
+						 [strongSelf sendChatMessage: [NSString stringWithFormat: @"%ld: %@", quoteIndex + 1, quoteLine]];
+					 }
+					 else
+						 [strongSelf sendChatMessage: @"Not found."];
 				 }
 				 else
 					 [strongSelf sendChatMessage: @"Not found."];
 			 }
 		 } forBotCommand: commandName];
 		
-		if( [commandInfo[@"ULIRCEditable"] boolValue] )
+		NSString * addCommandName = commandInfo[@"ULIRCAddCommandName"];
+		if( addCommandName || [commandInfo[@"ULIRCEditable"] boolValue] )
 		{
+			if( !addCommandName )
+				addCommandName = [@"add" stringByAppendingString:commandName];
+			
 			[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
 			 {
 				 typeof(self) strongSelf = weakSelf;
@@ -180,6 +189,8 @@
 				 {
 					 NSURL * quotesURL = [[strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
 					 NSMutableString * quotesData = [NSMutableString stringWithContentsOfURL: quotesURL encoding: NSUTF8StringEncoding error: NULL];
+					 if (!quotesData)
+						 quotesData = [NSMutableString new];
 					 inMessage = [inMessage stringByReplacingOccurrencesOfString:@"\r\n" withString: @" "];
 					 inMessage = [inMessage stringByReplacingOccurrencesOfString:@"\r" withString: @" "];
 					 inMessage = [inMessage stringByReplacingOccurrencesOfString:@"\n" withString: @" "];
@@ -189,7 +200,33 @@
 					 [quotesData writeToURL:quotesURL atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 					 [strongSelf sendChatMessage: @"Added."];
 				 }
-			 } forBotCommand: [@"add" stringByAppendingString:commandName]];
+			 } forBotCommand: addCommandName];
+		}
+		NSString * dequeueCommandName = commandInfo[@"ULIRCDequeueCommandName"];
+		if( dequeueCommandName )
+		{
+			if( !dequeueCommandName )
+				dequeueCommandName = [@"dequeue" stringByAppendingString:commandName];
+			
+			[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
+			 {
+				 typeof(self) strongSelf = weakSelf;
+				 if( strongSelf )
+				 {
+					 NSURL * quotesURL = [[strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
+					 NSMutableString * quotesData = [NSMutableString stringWithContentsOfURL: quotesURL encoding: NSUTF8StringEncoding error: NULL];
+					 NSRange lineBreakRange = [quotesData rangeOfString: @"\n"];
+					 if( lineBreakRange.location == NSNotFound )
+					 {
+						 lineBreakRange.location = quotesData.length;
+						 lineBreakRange.length = 0;
+					 }
+					 NSRange firstLineRange = NSMakeRange(0, NSMaxRange(lineBreakRange));
+					 [strongSelf sendChatMessage:[quotesData substringWithRange: firstLineRange]];
+					 [quotesData deleteCharactersInRange:firstLineRange];
+					 [quotesData writeToURL:quotesURL atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+				 }
+			 } forBotCommand: dequeueCommandName];
 		}
 	}
 	else if( [commandType.lowercaseString isEqualToString: @"message"] )

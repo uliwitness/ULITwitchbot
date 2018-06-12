@@ -36,7 +36,9 @@ A counter also implements a second command that can be used to just query the co
 
 A quote command looks for a text file named the same as the command and randomly displays lines from this file. So for example, if you named the command's folder "joke", it will look for a file named `~/Library/Application Support/ULITwitchbot/Quotes/joke.txt` and display a random line from that whenever a user types "!joke". If you specify a number after the command, e.g. "!joke 5", it will display the fifth line from that file instead.
 
-`ULIRCEditable` - Specify a boolean (either YES or NO) under this name in the command's Info.plist file to also add an "add"-command for the command, which chatters can use to add additional lines to this text file. If you name your command "joke", this option will add both a "joke" command and an "addjoke" command.
+`ULIRCAddCommandName` - Specify a string under this name in the command's Info.plist file to also add an "add"-command for the command, with the specified name, which chatters can use to add additional lines to this text file. If you name your command "joke", this option lets you add both a "joke" command and an "addjoke" command. 
+
+`ULIRCDequeueCommandName` - Specify a string under this name in the command's Info.plist file to also add a "dequeue"-command for the command, with the specified name, which chatters can use to remove the first line from the file when it is displayed. Since new quotes are always added at the end of the file, this can be used to e.g. have commands for a name queue. You can also use the normal command to randomly draw someone from that list.
 
 #### Commands of type "message"
 
