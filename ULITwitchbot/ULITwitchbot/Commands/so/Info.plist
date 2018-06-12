@@ -5,6 +5,6 @@
 	<key>ULIRCCommandType</key>
 	<string>message</string>
 	<key>ULIRCMessage</key>
-	<string>boo, %1%, boo! But well done.</string>
+	<string>Go follow %1%! They stream at https://twitch.tv/%1%</string>
 </dict>
 </plist>
