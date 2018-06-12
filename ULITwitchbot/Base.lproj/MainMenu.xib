@@ -786,7 +786,10 @@
                 <constraints>
                     <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="22" id="0Wm-vJ-NDX"/>
                     <constraint firstItem="sDo-Xa-Ie4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="39s-WA-TJB"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="sDo-Xa-Ie4" secondAttribute="trailing" constant="20" symbolic="YES" id="4iL-8X-Qy9"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ior-gz-Omc" secondAttribute="bottom" constant="20" symbolic="YES" id="9uc-fX-ZuJ"/>
                     <constraint firstItem="P2c-R4-ujj" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="EHK-92-Rd5"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uRn-ne-k9x" secondAttribute="trailing" constant="20" symbolic="YES" id="Gtk-Hn-4p6"/>
                     <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="I4A-eu-Q4g"/>
                     <constraint firstItem="AED-eB-HHS" firstAttribute="baseline" secondItem="P2c-R4-ujj" secondAttribute="baseline" id="Oag-6v-cdA"/>
                     <constraint firstItem="rXm-Sz-FIT" firstAttribute="leading" secondItem="ior-gz-Omc" secondAttribute="trailing" constant="8" symbolic="YES" id="OdI-yd-vBO"/>

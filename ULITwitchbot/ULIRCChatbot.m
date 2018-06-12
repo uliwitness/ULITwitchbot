@@ -118,7 +118,7 @@
 				 msg = [msg stringByReplacingOccurrencesOfString:@"%CHANNEL%" withString:self.channelName];
 				 [strongSelf sendChatMessage: msg];
 
-				 NSURL * countersURL = [_settingsFolderURL URLByAppendingPathComponent: @"Counters.plist"];
+				 NSURL * countersURL = [strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Counters.plist"];
 				 [self.counters writeToURL: countersURL error:NULL];
 			 }
 		 } forBotCommand: commandName];
@@ -141,7 +141,7 @@
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
 			 {
-				 NSURL * quotesURL = [[_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
+				 NSURL * quotesURL = [[strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
 				 NSString * quotesData = [NSString stringWithContentsOfURL: quotesURL encoding: NSUTF8StringEncoding error: NULL];
 				 NSArray * quotes = [quotesData componentsSeparatedByString: @"\n"];
 				 NSInteger quoteIndex = (inMessage.length > 0) ? (inMessage.integerValue - 1) : (rand() % quotes.count);
@@ -162,7 +162,7 @@
 				 typeof(self) strongSelf = weakSelf;
 				 if( strongSelf )
 				 {
-					 NSURL * quotesURL = [[_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
+					 NSURL * quotesURL = [[strongSelf->_settingsFolderURL URLByAppendingPathComponent: @"Quotes"] URLByAppendingPathComponent: [NSString stringWithFormat: @"%@.txt", commandName]];
 					 NSMutableString * quotesData = [NSMutableString stringWithContentsOfURL: quotesURL encoding: NSUTF8StringEncoding error: NULL];
 					 inMessage = [inMessage stringByReplacingOccurrencesOfString:@"\r\n" withString: @" "];
 					 inMessage = [inMessage stringByReplacingOccurrencesOfString:@"\r" withString: @" "];
