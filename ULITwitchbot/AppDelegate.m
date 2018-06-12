@@ -136,6 +136,8 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 		
 		[self didChangeValueForKey:@"enableShouldLoadBotCommands"];
 		[self didChangeValueForKey:@"connectButtonTitle"];
+		
+		[self.window makeKeyAndOrderFront:self];
 		return;
 	}
 	
@@ -174,7 +176,14 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 	
 	NSError * err = nil;
 	[self.chatbot connectReturningError:&err];
-	if (err) NSLog(@"%@", err);
+	if (err)
+	{
+		NSLog(@"%@", err);
+	}
+	else
+	{
+		[self.window orderOut:self];
+	}
 }
 
 -(IBAction) sendAMessage: (nullable id)sender

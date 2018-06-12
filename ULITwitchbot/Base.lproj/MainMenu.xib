@@ -117,6 +117,14 @@
                                     <action selector="revertDocumentToSaved:" target="-1" id="iJ3-Pv-kwq"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="et2-3B-Zbt"/>
+                            <menuItem title="Connect" id="4Fo-Mj-ueM">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="establishConnection:" target="Voe-Tx-rLC" id="KQb-PJ-2OH"/>
+                                    <binding destination="Voe-Tx-rLC" name="title" keyPath="connectButtonTitle" id="tPr-L0-nt2"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="aJh-i4-bef"/>
                             <menuItem title="Page Setup…" keyEquivalent="P" id="qIS-W8-SiK">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
@@ -683,7 +691,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="256" y="-100"/>
+            <point key="canvasLocation" x="299" y="-346"/>
         </menu>
         <window title="ULITwitchbot" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -716,6 +724,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="enableShouldLoadBotCommands" id="bsC-OF-jaL"/>
                             <outlet property="delegate" destination="Voe-Tx-rLC" id="PqW-G2-YYF"/>
                         </connections>
                     </textField>
@@ -729,6 +738,9 @@
                                 <string>NSAllRomanInputSourcesLocaleIdentifier</string>
                             </allowedInputSourceLocales>
                         </secureTextFieldCell>
+                        <connections>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="enableShouldLoadBotCommands" id="rLQ-zF-k6P"/>
+                        </connections>
                     </secureTextField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AED-eB-HHS">
                         <rect key="frame" x="347" y="281" width="90" height="28"/>
@@ -738,6 +750,7 @@
                         </buttonCell>
                         <connections>
                             <action selector="openTokenPageURL:" target="Voe-Tx-rLC" id="7qD-aL-B3N"/>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="enableShouldLoadBotCommands" id="6IN-Tn-FPq"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRn-ne-k9x">
@@ -762,6 +775,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="enableShouldLoadBotCommands" id="bcQ-jS-jlr"/>
                             <outlet property="delegate" destination="Voe-Tx-rLC" id="I7g-nP-vmV"/>
                         </connections>
                     </textField>
@@ -834,5 +848,6 @@
             </connections>
             <point key="canvasLocation" x="264" y="442"/>
         </window>
+        <userDefaultsController representsSharedInstance="YES" id="ols-kF-mG7"/>
     </objects>
 </document>
