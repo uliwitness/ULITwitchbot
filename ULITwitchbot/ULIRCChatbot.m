@@ -30,8 +30,6 @@
 @property NSDate *startupTime;
 @property NSMutableDictionary<NSString *,NSDictionary *> * userInfos;
 
-@property NSMutableArray<NSString *> * startupMessages;
-@property NSMutableArray<NSString *> * quietStartupMessages;
 @property NSMutableArray<NSTimer *> * messageTimers;
 
 @end
@@ -48,8 +46,6 @@
 	{
 		self.protocolCommands = [NSMutableDictionary new];
 		self.botCommands = [NSMutableDictionary new];
-		self.startupMessages = [NSMutableArray new];
-		self.quietStartupMessages = [NSMutableArray new];
 		self.messageTimers = [NSMutableArray new];
 		self.lastCommandUseTimes = [NSMutableDictionary new];
 		self.userInfos = [NSMutableDictionary new];
@@ -187,18 +183,23 @@
 		NSTimeInterval intervalBeforeMessages = [commandInfo[@"ULIRCInitialInterval"] doubleValue];
 		BOOL quietMessage = [commandInfo[@"ULIRCQuietly"] boolValue];
 
-		if( intervalBetweenMessages <= 0.0 && intervalBeforeMessages <= 0.0 )
-		{
-			if( quietMessage )
-			{
-				[self.quietStartupMessages addObject:message];
-			}
-			else
-			{
-				[self.startupMessages addObject:message];
-			}
-		}
-		else
+		[self registerHandler: ^( NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix, NSDictionary *inTags )
+		 {
+			 typeof(self) strongSelf = weakSelf;
+			 if( strongSelf )
+			 {
+				 if( quietMessage )
+				 {
+					 [strongSelf processOneSelfSentChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName parameters: [inMessage componentsSeparatedByString:@" "]]];
+				 }
+				 else
+				 {
+					 [strongSelf sendChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName parameters: [inMessage componentsSeparatedByString:@" "]]];
+				 }
+			 }
+		 } forBotCommand: commandName];
+		
+		if( intervalBetweenMessages > 0.0 || intervalBeforeMessages > 0.0 )
 		{
 			NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:intervalBetweenMessages repeats:(intervalBetweenMessages > 0.0) block:^(NSTimer * _Nonnull timer)
 			{
@@ -207,11 +208,11 @@
 				{
 					if( quietMessage )
 					{
-						[strongSelf processOneSelfSentChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName]];
+						[strongSelf processOneSelfSentChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName parameters: @[]]];
 					}
 					else
 					{
-						[strongSelf sendChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName]];
+						[strongSelf sendChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName parameters: @[]]];
 					}
 				}
 			}];
@@ -231,7 +232,7 @@
 }
 
 
--(NSString *)stringByReplacingPlaceholders:(NSString *)inString forCommand:(NSString *)inCommandName
+-(NSString *)stringByReplacingPlaceholders:(NSString *)inString forCommand:(NSString *)inCommandName parameters: (NSArray<NSString *> *)parameters
 {
 	NSMutableString * result = [inString mutableCopy];
 	
@@ -284,6 +285,15 @@
 
 		[result replaceOccurrencesOfString:@"%LASTUSETIME%" withString:formattedString options: 0 range:NSMakeRange(0, result.length)];
 	}
+	
+	for( NSInteger x = 1; x <= parameters.count; ++x )
+	{
+		NSString * currPlaceholder = [NSString stringWithFormat:@"%%%ld%%", (long)x];
+		if( [result containsString:currPlaceholder] )
+		{
+			[result replaceOccurrencesOfString:currPlaceholder withString:parameters[x - 1] options: 0 range:NSMakeRange(0, result.length)];
+		}
+	}
 
 	return result;
 }
@@ -319,16 +329,6 @@
 	
 	self.startupTime = [NSDate date];
 	
-	for( NSString * currMessage in self.quietStartupMessages )
-	{
-		[self processOneSelfSentChatMessage: [self stringByReplacingPlaceholders: currMessage forCommand: @""]];
-	}
-	
-	for( NSString * currMessage in self.startupMessages )
-	{
-		[self sendChatMessage: [self stringByReplacingPlaceholders: currMessage forCommand: @""]];
-	}
-
 	*outError = nil;
 }
 
