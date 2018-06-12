@@ -26,6 +26,12 @@
 @property NSMutableDictionary<NSString *,ULIRCBotCommandHandler> * botCommands;
 
 @property NSMutableDictionary<NSString *,NSNumber *> * counters;
+@property NSMutableDictionary<NSString *,NSDate *> * lastCommandUseTimes;
+@property NSDate *startupTime;
+
+@property NSMutableArray<NSString *> * startupMessages;
+@property NSMutableArray<NSString *> * quietStartupMessages;
+@property NSMutableArray<NSTimer *> * messageTimers;
 
 @end
 
@@ -39,8 +45,12 @@
 	self = [super init];
 	if( self )
 	{
-		self.protocolCommands = [NSMutableDictionary dictionary];
-		self.botCommands = [NSMutableDictionary dictionary];
+		self.protocolCommands = [NSMutableDictionary new];
+		self.botCommands = [NSMutableDictionary new];
+		self.startupMessages = [NSMutableArray new];
+		self.quietStartupMessages = [NSMutableArray new];
+		self.messageTimers = [NSMutableArray new];
+		self.lastCommandUseTimes = [NSMutableDictionary new];
 
 		[self registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix)
 		{
@@ -50,6 +60,12 @@
 	}
 	
 	return self;
+}
+
+
+-(void) dealloc
+{
+	[self.messageTimers makeObjectsPerformSelector:@selector(invalidate)];
 }
 
 
@@ -83,6 +99,8 @@
 	NSString * commandName = commandDirectory.lastPathComponent;
 	NSString * commandType = commandInfo[@"ULIRCCommandType"];
 	
+	NSLog(@"Loading command %@", commandName);
+	
 	ULIRCChatbot * __weak weakSelf = self;
 	if( [commandType.lowercaseString isEqualToString: @"counter"] )
 	{
@@ -96,8 +114,8 @@
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
 			 {
-				 NSNumber * currentCount = [strongSelf.counters objectForKey: inCommandName];
-				 [strongSelf.counters setObject: [NSNumber numberWithInteger: currentCount.integerValue + 1] forKey: inCommandName];
+				 NSNumber * currentCount = [strongSelf.counters objectForKey: inCommandName.lowercaseString];
+				 [strongSelf.counters setObject: [NSNumber numberWithInteger: currentCount.integerValue + 1] forKey: inCommandName.lowercaseString];
 				 NSString * msg = [msgFormat stringByReplacingOccurrencesOfString:@"%COUNT%" withString:[NSString stringWithFormat: @"%ld", (long)currentCount.integerValue + 1]];
 				 msg = [msg stringByReplacingOccurrencesOfString:@"%CHANNEL%" withString:self.channelName];
 				 [strongSelf sendChatMessage: msg];
@@ -111,7 +129,7 @@
 			 typeof(self) strongSelf = weakSelf;
 			 if( strongSelf )
 			 {
-				 NSNumber * currentCount = [strongSelf.counters objectForKey: commandName];
+				 NSNumber * currentCount = [strongSelf.counters objectForKey: commandName.lowercaseString];
 				 NSString * msg = [msgFormat stringByReplacingOccurrencesOfString:@"%COUNT%" withString:[NSString stringWithFormat: @"%ld", (long)currentCount.integerValue]];
 				 msg = [msg stringByReplacingOccurrencesOfString:@"%CHANNEL%" withString:self.channelName];
 				 [strongSelf sendChatMessage: msg];
@@ -160,10 +178,112 @@
 			 } forBotCommand: [@"add" stringByAppendingString:commandName]];
 		}
 	}
+	else if( [commandType.lowercaseString isEqualToString: @"message"] )
+	{
+		NSString * message = commandInfo[@"ULIRCMessage"];
+		NSTimeInterval intervalBetweenMessages = [commandInfo[@"ULIRCInterval"] doubleValue];
+		NSTimeInterval intervalBeforeMessages = [commandInfo[@"ULIRCInitialInterval"] doubleValue];
+		BOOL quietMessage = [commandInfo[@"ULIRCQuietly"] boolValue];
+
+		if( intervalBetweenMessages <= 0.0 && intervalBeforeMessages <= 0.0 )
+		{
+			if( quietMessage )
+			{
+				[self.quietStartupMessages addObject:message];
+			}
+			else
+			{
+				[self.startupMessages addObject:message];
+			}
+		}
+		else
+		{
+			NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:intervalBetweenMessages repeats:(intervalBetweenMessages > 0.0) block:^(NSTimer * _Nonnull timer)
+			{
+				typeof(self) strongSelf = weakSelf;
+				if( strongSelf )
+				{
+					if( quietMessage )
+					{
+						[strongSelf processOneSelfSentChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName]];
+					}
+					else
+					{
+						[strongSelf sendChatMessage:[self stringByReplacingPlaceholders: message forCommand: commandName]];
+					}
+				}
+			}];
+			
+			if( intervalBeforeMessages > 0.0 )
+			{
+				timer.fireDate = [NSDate dateWithTimeIntervalSinceNow:intervalBeforeMessages];
+			}
+			
+			[self.messageTimers addObject:timer];
+		}
+	}
 	else
 	{
 		NSLog(@"Failed to load command '%@', type '%@' unknown.", commandName, commandType);
 	}
+}
+
+
+-(NSString *)stringByReplacingPlaceholders:(NSString *)inString forCommand:(NSString *)inCommandName
+{
+	NSMutableString * result = [inString mutableCopy];
+	
+	if( [result containsString:@"%COUNT%"] )
+	{
+		NSNumber * currentCount = [self.counters objectForKey: inCommandName.lowercaseString];
+		NSNumber * newCount = [NSNumber numberWithInteger: currentCount.integerValue + 1];
+		[self.counters setObject: newCount forKey: inCommandName.lowercaseString];
+
+		[result replaceOccurrencesOfString:@"%COUNT%" withString:[NSString stringWithFormat:@"%@", newCount] options: 0 range:NSMakeRange(0, result.length)];
+		
+		NSURL * countersURL = [_settingsFolderURL URLByAppendingPathComponent: @"Counters.plist"];
+		[self.counters writeToURL: countersURL error:NULL];
+	}
+	
+	[result replaceOccurrencesOfString:@"%CHANNEL%" withString:self.channelName options: 0 range:NSMakeRange(0, result.length)];
+	
+	[result replaceOccurrencesOfString:@"%COMMANDNAME%" withString:inCommandName options: 0 range:NSMakeRange(0, result.length)];
+	
+	if( [result containsString:@"%LASTUSEINTERVAL%"] )
+	{
+		NSDate * lastUseTime = self.lastCommandUseTimes[inCommandName.lowercaseString];
+		if( !lastUseTime )
+		{
+			lastUseTime = self.startupTime;
+		}
+		
+		NSDateComponentsFormatter *componentFormatter = [NSDateComponentsFormatter new];
+		
+		componentFormatter.unitsStyle = NSDateComponentsFormatterUnitsStyleFull;
+		componentFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorDropAll;
+		
+		NSString * formattedString = [componentFormatter stringFromTimeInterval:NSDate.timeIntervalSinceReferenceDate - lastUseTime.timeIntervalSinceReferenceDate];
+
+		[result replaceOccurrencesOfString:@"%LASTUSEINTERVAL%" withString:formattedString options: 0 range:NSMakeRange(0, result.length)];
+	}
+
+	if( [result containsString:@"%LASTUSETIME%"] )
+	{
+		NSDate * lastUseTime = self.lastCommandUseTimes[inCommandName.lowercaseString];
+		if( !lastUseTime )
+		{
+			lastUseTime = self.startupTime;
+		}
+		
+		NSDateFormatter * dateFormatter = [NSDateFormatter new];
+		dateFormatter.timeStyle = NSDateFormatterShortStyle;
+		dateFormatter.dateStyle = NSDateFormatterShortStyle;
+		NSString * formattedString = [dateFormatter stringFromDate:lastUseTime];
+
+		[result replaceOccurrencesOfString:@"%LASTUSETIME%" withString:formattedString options: 0 range:NSMakeRange(0, result.length)];
+	}
+
+	return result;
 }
 
 
@@ -190,16 +310,47 @@
 	[self sendString: [NSString stringWithFormat: @"NICK %@", self.nickname]];
 
 	[self sendString: @"CAP REQ :twitch.tv/membership"];
-	
+//	[self sendString: @"CAP REQ :twitch.tv/tags"];
+	[self sendString: @"CAP REQ :twitch.tv/commands"];
+
 	[self sendString: [NSString stringWithFormat: @"JOIN #%@", self.channelName.lowercaseString]];
+	
+	self.startupTime = [NSDate date];
+	
+	for( NSString * currMessage in self.quietStartupMessages )
+	{
+		[self processOneSelfSentChatMessage: [self stringByReplacingPlaceholders: currMessage forCommand: @""]];
+	}
+	
+	for( NSString * currMessage in self.startupMessages )
+	{
+		[self sendChatMessage: [self stringByReplacingPlaceholders: currMessage forCommand: @""]];
+	}
 
 	*outError = nil;
+}
+
+
+-(void) disconnect
+{
+	[self sendString: [NSString stringWithFormat: @"PART #%@", self.channelName.lowercaseString]];
+	[self sendString: @"QUIT :bot disconnecting."];
+
+	[self.writeStream close];
+}
+
+
+-(void) processOneSelfSentChatMessage: (NSString *)text
+{
+	NSString * fullMessage = [NSString stringWithFormat: @":%1$@!%1$@@%1$@.tmi.twitch.tv PRIVMSG #%2$@ :%3$@", self.nickname, self.channelName.lowercaseString, text];
+	[self processOneMessage: fullMessage];
 }
 
 
 -(void) sendChatMessage: (NSString *)text
 {
 	[self sendString: [NSString stringWithFormat: @"PRIVMSG #%@ :%@", self.channelName.lowercaseString, text]];
+	[self processOneSelfSentChatMessage: text];
 }
 
 
@@ -228,7 +379,7 @@
 		currStr[bytesRead] = 0;
 		NSString *messageStr = [NSString stringWithUTF8String:(char*)currStr];
 		[self.receivedText appendString: messageStr];
-		//NSLog(@"Received %ld bytes: %@ [%ld,%ld]", (long)bytesRead, messageStr);
+		NSLog(@"Received %ld bytes: %@", (long)bytesRead, messageStr);
 		[self processReceivedText];
 	}
 }
@@ -236,6 +387,8 @@
 
 -(void) processOneMessage: (NSString*)inMessage
 {
+	NSLog(@"RECEIVED: %@", inMessage);
+	
 	NSString * currMessage = inMessage;
 	NSString * username = @"";
 	NSString * prefix = @"";
@@ -295,8 +448,8 @@
 	{
 		[messageParts addObject:currMessage];
 	}
-	//NSLog(@"%@", inMessage);
-	[self handleMessage: messageParts.firstObject forNickname: username parameters: [messageParts subarrayWithRange:NSMakeRange(1,messageParts.count - 1)] prefix: prefix];
+	NSLog(@"%@", inMessage);
+	[self handleMessage: messageParts.firstObject forNickname: username parameters: (messageParts.count > 1) ? [messageParts subarrayWithRange:NSMakeRange(1,messageParts.count - 1)] : @[] prefix: prefix];
 }
 
 
@@ -329,6 +482,7 @@
 				if( handler )
 				{
 					handler( botCommandName, inNickname, botCommandMessage, prefix );
+					self.lastCommandUseTimes[botCommandName.lowercaseString] = [NSDate date];
 					return;
 				}
 			}
@@ -343,7 +497,7 @@
 		handler( messageName, inNickname, inParameters, prefix );
 	}
 
-	//NSLog(@"[%@] %@: %@ %@", prefix, inNickname, messageName, inParameters);
+	NSLog(@"[%@] %@: %@ %@", prefix, inNickname, messageName, inParameters);
 }
 
 
@@ -371,6 +525,13 @@
 -(void) registerHandler: (ULIRCProtocolCommandHandler)inHandler forProtocolCommand: (NSString *)inIRCCommandName // Low-level IRC command.
 {
 	self.protocolCommands[inIRCCommandName] = inHandler;
+}
+
+
+-(void) sendRequest
+{
+	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitch.tv/helix/"]];
+	[request setValue:[NSString stringWithFormat:@"Bearer %@", self.oauthToken] forHTTPHeaderField:@"Authorization"];
 }
 
 @end

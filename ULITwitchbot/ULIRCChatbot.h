@@ -22,6 +22,7 @@ typedef void (^ULIRCBotCommandHandler)(NSString *inCommandName, NSString *inNick
 @property (strong) NSURL *settingsFolderURL;
 
 -(void) connectReturningError: (NSError **)outError;
+-(void) disconnect;
 
 -(void) sendChatMessage: (NSString *)text;
 

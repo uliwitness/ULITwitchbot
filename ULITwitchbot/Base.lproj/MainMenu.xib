@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,9 +11,10 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
+                <outlet property="channelNameField" destination="w3a-wq-vGC" id="oYe-sb-NaU"/>
                 <outlet property="messageField" destination="ior-gz-Omc" id="Oq0-F4-Igs"/>
                 <outlet property="oauthTokenField" destination="P2c-R4-ujj" id="Qwf-16-cL8"/>
                 <outlet property="userNameField" destination="mCP-es-SA4" id="zkL-g5-0ce"/>
@@ -681,6 +682,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="256" y="-100"/>
         </menu>
         <window title="ULITwitchbot" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -692,7 +694,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXm-Sz-FIT">
-                        <rect key="frame" x="367" y="220" width="71" height="32"/>
+                        <rect key="frame" x="367" y="184" width="71" height="32"/>
                         <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eCH-Wa-25o">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -702,17 +704,18 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sDo-Xa-Ie4">
-                        <rect key="frame" x="14" y="250" width="92" height="32"/>
+                        <rect key="frame" x="14" y="228" width="92" height="32"/>
                         <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Cq-f3-hRL">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
                             <action selector="establishConnection:" target="Voe-Tx-rLC" id="GRe-aY-4H8"/>
+                            <binding destination="Voe-Tx-rLC" name="title" keyPath="connectButtonTitle" id="vhU-Zv-QVU"/>
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ior-gz-Omc">
-                        <rect key="frame" x="20" y="227" width="345" height="22"/>
+                        <rect key="frame" x="20" y="191" width="345" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Chat Message" drawsBackground="YES" id="0FR-z1-puv">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -724,11 +727,14 @@
                         <constraints>
                             <constraint firstAttribute="width" constant="180" id="Krt-gH-zlB"/>
                         </constraints>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="user name" drawsBackground="YES" id="Y3G-Vf-JCL">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="user name" drawsBackground="YES" id="Y3G-Vf-JCL">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <outlet property="delegate" destination="Voe-Tx-rLC" id="PqW-G2-YYF"/>
+                        </connections>
                     </textField>
                     <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P2c-R4-ujj">
                         <rect key="frame" x="20" y="286" width="324" height="22"/>
@@ -751,23 +757,52 @@
                             <action selector="openTokenPageURL:" target="Voe-Tx-rLC" id="7qD-aL-B3N"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRn-ne-k9x">
+                        <rect key="frame" x="18" y="262" width="149" height="18"/>
+                        <buttonCell key="cell" type="check" title="Load Bot Commands" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hbl-gH-gmo">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="enableShouldLoadBotCommands" id="uqs-AH-DmO"/>
+                            <binding destination="Voe-Tx-rLC" name="value" keyPath="shouldLoadBotCommands" id="t6c-u3-ACX"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w3a-wq-vGC">
+                        <rect key="frame" x="208" y="318" width="180" height="22"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="180" id="v0b-k0-bkw"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="channel" drawsBackground="YES" id="LvM-AX-iw9">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <outlet property="delegate" destination="Voe-Tx-rLC" id="I7g-nP-vmV"/>
+                        </connections>
+                    </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="8" symbolic="YES" id="0Wm-vJ-NDX"/>
+                    <constraint firstItem="ior-gz-Omc" firstAttribute="top" secondItem="sDo-Xa-Ie4" secondAttribute="bottom" constant="22" id="0Wm-vJ-NDX"/>
                     <constraint firstItem="sDo-Xa-Ie4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="39s-WA-TJB"/>
                     <constraint firstItem="P2c-R4-ujj" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="EHK-92-Rd5"/>
                     <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="I4A-eu-Q4g"/>
                     <constraint firstItem="AED-eB-HHS" firstAttribute="baseline" secondItem="P2c-R4-ujj" secondAttribute="baseline" id="Oag-6v-cdA"/>
                     <constraint firstItem="rXm-Sz-FIT" firstAttribute="leading" secondItem="ior-gz-Omc" secondAttribute="trailing" constant="8" symbolic="YES" id="OdI-yd-vBO"/>
+                    <constraint firstItem="sDo-Xa-Ie4" firstAttribute="top" secondItem="uRn-ne-k9x" secondAttribute="bottom" constant="8" id="V8N-qh-EgO"/>
                     <constraint firstItem="ior-gz-Omc" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="YWN-qZ-nz3"/>
                     <constraint firstItem="mCP-es-SA4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" id="bIu-fo-8K1"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mCP-es-SA4" secondAttribute="trailing" constant="20" symbolic="YES" id="cnX-ZB-KY5"/>
+                    <constraint firstItem="w3a-wq-vGC" firstAttribute="leading" secondItem="mCP-es-SA4" secondAttribute="trailing" constant="8" symbolic="YES" id="e3x-2U-qzY"/>
+                    <constraint firstItem="w3a-wq-vGC" firstAttribute="baseline" secondItem="mCP-es-SA4" secondAttribute="baseline" id="ela-Xl-Oyf"/>
                     <constraint firstAttribute="trailing" secondItem="rXm-Sz-FIT" secondAttribute="trailing" constant="20" symbolic="YES" id="fUK-70-9O5"/>
                     <constraint firstItem="rXm-Sz-FIT" firstAttribute="baseline" secondItem="ior-gz-Omc" secondAttribute="baseline" id="iRT-a5-VEu"/>
+                    <constraint firstItem="uRn-ne-k9x" firstAttribute="top" secondItem="P2c-R4-ujj" secondAttribute="bottom" constant="8" symbolic="YES" id="k4u-nx-OIt"/>
                     <constraint firstItem="P2c-R4-ujj" firstAttribute="top" secondItem="mCP-es-SA4" secondAttribute="bottom" constant="10" symbolic="YES" id="nca-9v-z3H"/>
                     <constraint firstItem="mCP-es-SA4" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" id="qhE-Ga-q9W"/>
-                    <constraint firstItem="sDo-Xa-Ie4" firstAttribute="top" secondItem="P2c-R4-ujj" secondAttribute="bottom" constant="8" symbolic="YES" id="t8q-FE-dbC"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="w3a-wq-vGC" secondAttribute="trailing" constant="20" symbolic="YES" id="qrh-Sd-b1e"/>
                     <constraint firstItem="AED-eB-HHS" firstAttribute="leading" secondItem="P2c-R4-ujj" secondAttribute="trailing" constant="8" symbolic="YES" id="tAg-fe-va6"/>
+                    <constraint firstItem="uRn-ne-k9x" firstAttribute="leading" secondItem="P2c-R4-ujj" secondAttribute="leading" id="x4q-bQ-7hX"/>
                     <constraint firstAttribute="trailing" secondItem="AED-eB-HHS" secondAttribute="trailing" constant="20" symbolic="YES" id="ye0-4i-z9Y"/>
                 </constraints>
             </view>
