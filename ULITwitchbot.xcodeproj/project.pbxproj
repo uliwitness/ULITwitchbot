@@ -8,19 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		550C7A8B20570D9400D0C4A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A8A20570D9400D0C4A3 /* AppDelegate.m */; };
-		550C7A8D20570D9400D0C4A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A8C20570D9400D0C4A3 /* Assets.xcassets */; };
 		550C7A9020570D9400D0C4A3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A8E20570D9400D0C4A3 /* MainMenu.xib */; };
 		550C7A9320570D9400D0C4A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9220570D9400D0C4A3 /* main.m */; };
 		550C7A9C20570E3500D0C4A3 /* ULIRCChatbot.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */; };
 		550C7A9E205757A200D0C4A3 /* ULITwitchbot in Resources */ = {isa = PBXBuildFile; fileRef = 550C7A9D205757A200D0C4A3 /* ULITwitchbot */; };
 		55A5496720CFB7830015ED10 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 55A5496620CFB7820015ED10 /* README.md */; };
+		55A5496920D098E50015ED10 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55A5496820D098E50015ED10 /* AppIcon.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		550C7A8620570D9400D0C4A3 /* ULITwitchbot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ULITwitchbot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		550C7A8920570D9400D0C4A3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		550C7A8A20570D9400D0C4A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		550C7A8C20570D9400D0C4A3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		550C7A8F20570D9400D0C4A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		550C7A9120570D9400D0C4A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		550C7A9220570D9400D0C4A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -29,6 +28,7 @@
 		550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ULIRCChatbot.m; sourceTree = "<group>"; };
 		550C7A9D205757A200D0C4A3 /* ULITwitchbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ULITwitchbot; sourceTree = "<group>"; };
 		55A5496620CFB7820015ED10 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		55A5496820D098E50015ED10 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,11 +62,11 @@
 		550C7A8820570D9400D0C4A3 /* ULITwitchbot */ = {
 			isa = PBXGroup;
 			children = (
+				55A5496820D098E50015ED10 /* AppIcon.icns */,
 				550C7A8920570D9400D0C4A3 /* AppDelegate.h */,
 				550C7A8A20570D9400D0C4A3 /* AppDelegate.m */,
 				550C7A9A20570E3500D0C4A3 /* ULIRCChatbot.h */,
 				550C7A9B20570E3500D0C4A3 /* ULIRCChatbot.m */,
-				550C7A8C20570D9400D0C4A3 /* Assets.xcassets */,
 				550C7A8E20570D9400D0C4A3 /* MainMenu.xib */,
 				550C7A9120570D9400D0C4A3 /* Info.plist */,
 				550C7A9220570D9400D0C4A3 /* main.m */,
@@ -135,8 +135,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				550C7A8D20570D9400D0C4A3 /* Assets.xcassets in Resources */,
 				550C7A9020570D9400D0C4A3 /* MainMenu.xib in Resources */,
+				55A5496920D098E50015ED10 /* AppIcon.icns in Resources */,
 				55A5496720CFB7830015ED10 /* README.md in Resources */,
 				550C7A9E205757A200D0C4A3 /* ULITwitchbot in Resources */,
 			);
@@ -279,7 +279,6 @@
 		550C7A9820570D9400D0C4A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RCKXACKVZS;
@@ -293,7 +292,6 @@
 		550C7A9920570D9400D0C4A3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RCKXACKVZS;

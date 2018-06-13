@@ -11,7 +11,7 @@
 @import Carbon;
 
 
-@interface AppDelegate ()
+@interface AppDelegate () <NSUserNotificationCenterDelegate>
 
 @property (weak) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSTextField *messageField;
@@ -96,6 +96,8 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 	
 	EventHotKeyRef carbonHotKey;
 	OSStatus err = RegisterEventHotKey(0x11, cmdKey | controlKey | optionKey, keyID, GetEventDispatcherTarget(), 0, &carbonHotKey);
+	
+	NSUserNotificationCenter.defaultUserNotificationCenter.delegate = self;
 }
 
 
@@ -171,7 +173,11 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 	
 	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix, NSDictionary *inTags)
 	{
-		NSLog(@"[%@] %@: %@", (inParameters.count > 0) ? inParameters[0] : @"", inNickname, (inParameters.count > 1) ? inParameters[1] : @"");
+		NSUserNotification * notification = [NSUserNotification new];
+		notification.title = [NSString stringWithFormat: @"%@ (%@)", inNickname, (inParameters.count > 0) ? inParameters[0] : @""];
+		notification.informativeText = (inParameters.count > 1) ? inParameters[1] : @"";
+		notification.identifier = NSUUID.UUID.UUIDString;
+		[NSUserNotificationCenter.defaultUserNotificationCenter deliverNotification: notification];
 	} forProtocolCommand: @"PRIVMSG"];
 	
 	NSError * err = nil;
@@ -236,6 +242,11 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 		[NSUserDefaults.standardUserDefaults setObject:self.channelNameField.stringValue forKey:@"ULIRCChannelName"];
 		self.makeChannelNameMatchUserName = [self.userName caseInsensitiveCompare:self.channelName] == NSOrderedSame;
 	}
+}
+
+-(BOOL)	userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+{
+	return YES;
 }
 
 @end

@@ -433,7 +433,10 @@
 			return;
 		currStr[bytesRead] = 0;
 		NSString *messageStr = [NSString stringWithUTF8String:(char*)currStr];
-		[self.receivedText appendString: messageStr];
+		if( !messageStr )
+			messageStr = [NSString stringWithCString:(char*)currStr encoding:NSISOLatin1StringEncoding];
+		if( messageStr )
+			[self.receivedText appendString: messageStr];
 		NSLog(@"Received %ld bytes: %@", (long)bytesRead, messageStr);
 		[self processReceivedText];
 	}

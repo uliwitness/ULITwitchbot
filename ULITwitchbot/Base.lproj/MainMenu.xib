@@ -693,17 +693,17 @@
             </items>
             <point key="canvasLocation" x="299" y="-346"/>
         </menu>
-        <window title="ULITwitchbot" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+        <window title="ULITwitchbot" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="ULITwitchbotMainWindow" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="452" height="360"/>
+            <windowPositionMask key="initialPositionMask" topStrut="YES"/>
+            <rect key="contentRect" x="335" y="591" width="452" height="145"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="452" height="360"/>
+                <rect key="frame" x="0.0" y="0.0" width="452" height="145"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sDo-Xa-Ie4">
-                        <rect key="frame" x="14" y="228" width="92" height="32"/>
+                        <rect key="frame" x="14" y="13" width="92" height="32"/>
                         <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Cq-f3-hRL">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -714,7 +714,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mCP-es-SA4">
-                        <rect key="frame" x="20" y="318" width="180" height="22"/>
+                        <rect key="frame" x="20" y="103" width="180" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="180" id="Krt-gH-zlB"/>
                         </constraints>
@@ -729,7 +729,7 @@
                         </connections>
                     </textField>
                     <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P2c-R4-ujj">
-                        <rect key="frame" x="20" y="286" width="324" height="22"/>
+                        <rect key="frame" x="20" y="71" width="324" height="22"/>
                         <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="OAuth Token" drawsBackground="YES" usesSingleLineMode="YES" id="RQ5-lx-S6c">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -743,7 +743,7 @@
                         </connections>
                     </secureTextField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AED-eB-HHS">
-                        <rect key="frame" x="347" y="281" width="90" height="28"/>
+                        <rect key="frame" x="347" y="66" width="90" height="28"/>
                         <buttonCell key="cell" type="push" title="Get A Token" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZU7-dx-rEY">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -754,7 +754,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRn-ne-k9x">
-                        <rect key="frame" x="18" y="262" width="149" height="18"/>
+                        <rect key="frame" x="18" y="47" width="149" height="18"/>
                         <buttonCell key="cell" type="check" title="Load Bot Commands" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hbl-gH-gmo">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -765,7 +765,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w3a-wq-vGC">
-                        <rect key="frame" x="208" y="318" width="180" height="22"/>
+                        <rect key="frame" x="208" y="103" width="180" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="180" id="v0b-k0-bkw"/>
                         </constraints>
@@ -800,7 +800,7 @@
                     <constraint firstAttribute="trailing" secondItem="AED-eB-HHS" secondAttribute="trailing" constant="20" symbolic="YES" id="ye0-4i-z9Y"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="255" y="162"/>
+            <point key="canvasLocation" x="255" y="54.5"/>
         </window>
         <window title="Post Message" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ew4-r0-9lW" userLabel="Post Message" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES"/>
