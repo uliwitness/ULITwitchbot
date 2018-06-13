@@ -178,6 +178,38 @@ OSStatus ULIHotKeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 		notification.informativeText = (inParameters.count > 1) ? inParameters[1] : @"";
 		notification.identifier = NSUUID.UUID.UUIDString;
 		[NSUserNotificationCenter.defaultUserNotificationCenter deliverNotification: notification];
+		
+		NSMutableAttributedString * attrStr = [NSMutableAttributedString new];
+		[attrStr.mutableString setString:(inParameters.count > 1) ? inParameters[1] : @""];
+
+		NSCharacterSet *cs = [NSCharacterSet characterSetWithCharactersInString:@":-"];
+		NSCharacterSet *cs2 = [NSCharacterSet characterSetWithCharactersInString:@"/,"];
+		NSArray<NSString *> *emotes = [inTags[@"emotes"] componentsSeparatedByCharactersInSet:cs2];
+		NSString *lastEmoteName = nil;
+		NSInteger locationFix = 0;
+		
+		for( NSString *currEmote in emotes )
+		{
+			NSArray<NSString *> *emoteParts = [currEmote componentsSeparatedByCharactersInSet:cs];
+			if( emoteParts.count == 2 && lastEmoteName )
+				emoteParts = [@[lastEmoteName] arrayByAddingObjectsFromArray:emoteParts];
+			if( emoteParts.count < 3 )
+				continue;
+			NSString * str = [NSString stringWithFormat: @"https://static-cdn.jtvnw.net/emoticons/v1/%@/2.0", emoteParts.firstObject];
+			NSRange emoteRange = NSMakeRange(emoteParts[1].integerValue - locationFix, emoteParts[2].integerValue - emoteParts[1].integerValue + 1);
+			NSImage * img = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString: str]];
+			NSTextAttachment *ta = [NSTextAttachment new];
+			ta.image = img;
+			NSAttributedString * imgStr = [NSAttributedString attributedStringWithAttachment:ta];
+			locationFix += emoteRange.length - imgStr.length;
+
+			[attrStr replaceCharactersInRange:emoteRange withAttributedString:imgStr];
+			
+			lastEmoteName = emoteParts.firstObject;
+		}
+		
+//		NSFileWrapper *wrapper = [attrStr fileWrapperFromRange:NSMakeRange(0, attrStr.length) documentAttributes:@{ NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType } error:NULL];
+//		[wrapper writeToFile:@"/Users/uli/Downloads/foo.rtfd" atomically:YES updateFilenames:YES];
 	} forProtocolCommand: @"PRIVMSG"];
 	
 	NSError * err = nil;
