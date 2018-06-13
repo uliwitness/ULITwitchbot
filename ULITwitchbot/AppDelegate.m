@@ -71,6 +71,7 @@
 	SecItemAdd( (__bridge CFDictionaryRef) secItemInfo, NULL );
 }
 
+static FILE* theFile = nil;
 
 -(IBAction)establishConnection:(nullable id)sender
 {
@@ -80,24 +81,51 @@
 		[[NSFileManager defaultManager] copyItemAtURL:[NSBundle.mainBundle URLForResource:settingsURL.lastPathComponent withExtension:nil] toURL:settingsURL error:NULL];
 	}
 	self.chatbot = [ULIRCChatbot new];
-	self.chatbot.settingsFolderURL = settingsURL;
+//    self.chatbot.settingsFolderURL = settingsURL;
 	self.chatbot.oauthToken = self.oauthToken;
 	self.chatbot.nickname = self.userName;
-	self.chatbot.channelName = self.userName;
+    self.chatbot.channelName = @"meluist";//self.userName;
 	
 	NSLog(@"Settings folder: %@", self.chatbot.settingsFolderURL);
 	
-	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix) {
-		NSLog(@"%@ BOT COMMAND TRIGGERED", inCommandName);
-	} forBotCommand:@"*"];
-	
+//    [self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSString *inMessage, NSString *inPrefix) {
+//        NSLog(@"%@ BOT COMMAND TRIGGERED", inCommandName);
+//    } forBotCommand:@"*"];
+
+    theFile = fopen(@"~/MeluistQuotes.txt".stringByExpandingTildeInPath.fileSystemRepresentation, "w");
 	[self.chatbot registerHandler:^(NSString *inCommandName, NSString *inNickname, NSArray<NSString *> *inParameters, NSString *inPrefix) {
-		NSLog(@"[%@] %@: %@", (inParameters.count > 0) ? inParameters[0] : @"", inNickname, (inParameters.count > 1) ? inParameters[1] : @"");
+//        NSLog(@"[%@] %@: %@", (inParameters.count > 0) ? inParameters[0] : @"", inNickname, (inParameters.count > 1) ? inParameters[1] : @"");
+        if( inParameters.count > 1 && [inNickname caseInsensitiveCompare:@"melubot"] == NSOrderedSame)
+        {
+            fprintf(theFile, "%s\r\n", [inParameters[1] UTF8String]);
+            fflush(theFile);
+            NSLog(@"%@", inParameters[1]);
+        }
 	} forProtocolCommand: @"PRIVMSG"];
 	
 	NSError * err = nil;
 	[self.chatbot connectReturningError:&err];
 	if (err) NSLog(@"%@", err);
+
+    __block NSInteger quoteIndex = 143;
+    NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:20.0 repeats:YES block:^(NSTimer * _Nonnull timer)
+                       {
+                           NSString * command = [NSString stringWithFormat:@"!quote %ld", (long)++quoteIndex];
+                           [self.chatbot sendChatMessage: command];
+                           if (quoteIndex >= 790)
+                           {
+                               [self performSelector:@selector(shutDownWritingWithTimer:) withObject:timer afterDelay:10.0];
+                               [timer invalidate];
+                           }
+                       }];
+    timer.tolerance = 2.0;
+}
+
+-(void)shutDownWritingWithTimer:(NSTimer *)timer
+{
+    fclose(theFile);
+    theFile = NULL;
+    NSLog(@"*** Done. *** ");
 }
 
 -(IBAction) sendAMessage: (nullable id)sender
